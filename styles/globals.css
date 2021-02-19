@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+
+a {
+  @apply underline;
+}
+
+.btn {
+  @apply border rounded px-4;
+}
+
+@tailwind utilities;

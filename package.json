@@ -1,0 +1,33 @@
+{
+  "name": "storytool-next",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-micro": "^2.21.0",
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "cookies": "^0.8.0",
+    "dotenv": "^8.2.0",
+    "draft-js": "^0.11.7",
+    "graphql": "^15.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.16",
+    "next": "^10.0.7",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-draft-wysiwyg": "^1.14.5",
+    "swr": "^0.4.2",
+    "unstated-next": "^1.1.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.4",
+    "postcss": "^8.2.6",
+    "tailwindcss": "^2.0.3"
+  }
+}
