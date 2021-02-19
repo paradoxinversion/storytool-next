@@ -44,3 +44,17 @@ export const createScene = async ({
     throw e;
   }
 };
+
+export const updateSceneText = async ({ sceneId, sceneText }) => {
+  try {
+    await connectToDatabase();
+    const sceneUpdate = await Scene.findByIdAndUpdate(
+      sceneId,
+      { text: sceneText },
+      { new: true, select: "text" }
+    );
+    return sceneUpdate;
+  } catch (e) {
+    throw e;
+  }
+};

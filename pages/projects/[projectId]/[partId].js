@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function PartOverview() {
   const router = useRouter();
-  const { partId } = router.query;
+  const { partId, projectId } = router.query;
   // if (!partId) return null;
 
   // partId will be undefined on the first render.
@@ -51,9 +51,7 @@ function PartOverview() {
   return (
     <div>
       <p>{part.name}</p>
-      <Link
-        href={`/projects/${router.query.projectId}/${part._id}/create-scene`}
-      >
+      <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
         <a>New Scene</a>
       </Link>
       {partScenes.partScenes.map((partScene, index) => (
@@ -61,9 +59,7 @@ function PartOverview() {
           <p>
             {index + 1}: {partScene.name}
           </p>
-          <Link
-            href={`/projects/${router.query.projectId}/${part._id}/${partScene._id}`}
-          >
+          <Link href={`/projects/${projectId}/${partId}/${partScene._id}`}>
             <a>Go to</a>
           </Link>
         </div>

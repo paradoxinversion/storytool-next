@@ -9,10 +9,10 @@ export default function Dashboard() {
   const UserData = Auth.useContainer();
   const router = useRouter();
 
-  const { data: userProjects, mutate } = useSWR(
+  const { data: userProjects, error } = useSWR(
     `
     {
-      getProjects{
+      projects{
         _id
         name
       }
@@ -35,6 +35,9 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const { projects } = userProjects;
+
   return (
     <div id="dashboard" className="m-4 w-full">
       <p className="text-2xl">Dashboard</p>
@@ -47,19 +50,18 @@ export default function Dashboard() {
         New Project
       </button>
       <div id="projects">
-        {userProjects &&
-          userProjects.getProjects.map((project) => (
-            <div key={project._id}>
-              <p>{project.name}</p>
-              <button
-                onClick={() => {
-                  router.push(`/projects/${project._id}`);
-                }}
-              >
-                Go To
-              </button>
-            </div>
-          ))}
+        {projects.map((project) => (
+          <div key={project._id}>
+            <p>{project.name}</p>
+            <button
+              onClick={() => {
+                router.push(`/projects/${project._id}`);
+              }}
+            >
+              Go To
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -4,7 +4,12 @@ import Cookies from "cookies";
 import { logInUser, registerUser, returnUser } from "../../actions/user";
 
 import { createPart, getPart, getProjectParts } from "../../actions/part";
-import { getPartScenes, createScene, getScene } from "../../actions/scene";
+import {
+  getPartScenes,
+  createScene,
+  getScene,
+  updateSceneText,
+} from "../../actions/scene";
 import {
   createProject,
   getProject,
@@ -24,8 +29,8 @@ const typeDefs = gql`
   type Query {
     sayHello: String
     authorized: User
-    getProjects: [Project]
-    getProject(projectId: String!): Project
+    projects: [Project]
+    project(projectId: String!): Project
     projectParts(projectId: String): [Part]
     part(partId: String!): Part
     partScenes(partId: String!): [Scene]
@@ -43,6 +48,7 @@ const typeDefs = gql`
       projectId: String!
       partId: String!
     ): CreationResult
+    updateSceneText(text: String!, sceneId: String!): CreationResult
   }
   type User {
     _id: String
@@ -71,7 +77,9 @@ const typeDefs = gql`
     user: User
     error: String
   }
-
+  """
+  CreationResults are used both in creation, modification, and deletion results. Need a better name for them.
+  """
   type CreationResult {
     project: Project
     part: Part
@@ -91,7 +99,7 @@ const resolvers = {
       }
       return await returnUser(context.user.id);
     },
-    async getProject(parent, { projectId }, context) {
+    async project(parent, { projectId }, context) {
       try {
         const userProject = await getProject(projectId);
         return userProject;
@@ -99,7 +107,7 @@ const resolvers = {
         throw e;
       }
     },
-    async getProjects(parent, args, context) {
+    async projects(parent, args, context) {
       try {
         const userProjects = await getUserProjects(context.user.id);
         return userProjects;
@@ -195,6 +203,14 @@ const resolvers = {
           partId: partId,
         });
         return { project: null, part: null, scene: scene, error: null };
+      } catch (e) {
+        return { project: null, part: null, scene: null, error: e.message };
+      }
+    },
+    async updateSceneText(parent, { sceneId, text }, context) {
+      try {
+        const sceneUpdate = await updateSceneText({ sceneId, sceneText: text });
+        return { project: null, part: null, scene: sceneUpdate, error: null };
       } catch (e) {
         return { project: null, part: null, scene: null, error: e.message };
       }
