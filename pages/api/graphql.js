@@ -8,6 +8,7 @@ import {
   deletePart,
   getPart,
   getProjectParts,
+  updatePartName,
   userOwnsPart,
 } from "../../actions/part";
 import {
@@ -18,12 +19,14 @@ import {
   getUserScenes,
   deleteScene,
   userOwnsScene,
+  updateSceneName,
 } from "../../actions/scene";
 import {
   createProject,
   deleteProject,
   getProject,
   getUserProjects,
+  updateProjectName,
   userOwnsProject,
 } from "../../actions/project";
 
@@ -62,24 +65,31 @@ const typeDefs = gql`
     ): CreationResult
     updateSceneText(text: String!, sceneId: String!): CreationResult
     deleteScene(sceneId: String!): CreationResult
-    deletePart(partId: String): CreationResult
-    deleteProject(projectId: String): CreationResult
+    deletePart(partId: String!): CreationResult
+    deleteProject(projectId: String!): CreationResult
+    updateProjectName(projectId: String!, projectName: String!): Project
+    updatePartName(partId: String!, partName: String!): Part
+    updateSceneName(sceneId: String!, sceneName: String!): Scene
   }
+
   type User {
     _id: String
     username: String
   }
+
   type Project {
     _id: String
     name: String
     owner: User
   }
+
   type Part {
     _id: String
     name: String
     project: Project
     owner: User
   }
+
   type Scene {
     _id: String
     text: String
@@ -314,6 +324,48 @@ const resolvers = {
         };
       } catch (e) {
         return { project: null, part: null, scene: null, error: e.message };
+      }
+    },
+    async updateProjectName(parent, { projectId, projectName }, context) {
+      try {
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const project = await updateProjectName({
+          projectId,
+          name: projectName,
+        });
+        return project;
+      } catch (e) {
+        throw e;
+      }
+    },
+    async updatePartName(parent, { partId, partName }, context) {
+      try {
+        if (!(await userOwnsPart({ partId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const part = await updatePartName({
+          partId,
+          name: partName,
+        });
+        return part;
+      } catch (e) {
+        throw e;
+      }
+    },
+    async updateSceneName(parent, { sceneId, sceneName }, context) {
+      try {
+        if (!(await userOwnsScene({ sceneId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const scene = await updateSceneName({
+          sceneId,
+          name: sceneName,
+        });
+        return scene;
+      } catch (e) {
+        throw e;
       }
     },
   },

@@ -84,3 +84,13 @@ export const userOwnsScene = async ({ userId, sceneId }) => {
     throw e;
   }
 };
+
+export const updateSceneName = async ({ sceneId, name }) => {
+  try {
+    await connectToDatabase();
+    const scene = await Scene.findByIdAndUpdate(sceneId, { name }).lean();
+    return scene;
+  } catch (e) {
+    throw e;
+  }
+};

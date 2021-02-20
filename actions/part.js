@@ -57,3 +57,13 @@ export const userOwnsPart = async ({ userId, partId }) => {
     throw e;
   }
 };
+
+export const updatePartName = async ({ partId, name }) => {
+  try {
+    await connectToDatabase();
+    const part = await Part.findByIdAndUpdate(partId, { name }).lean();
+    return part;
+  } catch (e) {
+    throw e;
+  }
+};

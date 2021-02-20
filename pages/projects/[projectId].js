@@ -3,10 +3,13 @@ import fetcher from "../../utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
+import { useState } from "react";
 function ProjectOverview() {
   const router = useRouter();
   const { projectId } = router.query;
-  const { data: projectData } = useSWR(
+  const [editProjectName, setEditProjectName] = useState(false);
+  const [projectNameUpdate, setProjectNameUpdate] = useState("");
+  const { data: projectData, mutate: mutateProjectData } = useSWR(
     () =>
       projectId
         ? `
@@ -46,13 +49,52 @@ function ProjectOverview() {
   const { projectParts: parts } = projectParts;
   return (
     <div className="m-4 w-full">
-      <Link href={`/dashboard`}>
-        <a>Back to Dashboard</a>
-      </Link>
-      <p>{project.name}</p>
-      <Link href={`/projects/${project._id}/create-part`}>
-        <a>Create a Part</a>
-      </Link>
+      <header>
+        <Link href={`/dashboard`}>
+          <a>Back to Dashboard</a>
+        </Link>
+        {editProjectName ? (
+          <div>
+            <input
+              type="text"
+              placeholder={project.name}
+              onChange={(e) => setProjectNameUpdate(e.target.value)}
+            />
+            <button
+              onClick={async () => {
+                await axios.post("/api/graphql", {
+                  query: `
+                  mutation($projectId: String!, $projectName: String!){
+                    updateProjectName(projectId:$projectId, projectName:$projectName){
+                     name
+                    }
+                  }
+                  
+                  `,
+                  variables: {
+                    projectId: project._id,
+                    projectName: projectNameUpdate,
+                  },
+                });
+                setProjectNameUpdate("");
+                setEditProjectName(false);
+                mutateProjectData();
+              }}
+              disabled={projectNameUpdate.length === 0}
+            >
+              Save
+            </button>
+            <button onClick={() => setEditProjectName(false)}>Cancel</button>
+          </div>
+        ) : (
+          <p className="text-2xl" onClick={() => setEditProjectName(true)}>
+            {project.name}
+          </p>
+        )}
+        <Link href={`/projects/${project._id}/create-part`}>
+          <a>Create a Part</a>
+        </Link>
+      </header>
       <div className="grid grid-cols-3 gap-8">
         {parts.map((projectPart, index) => (
           <div key={projectPart._id} className="asset-card">

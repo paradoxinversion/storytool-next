@@ -3,9 +3,12 @@ import fetcher from "../../../utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
+import { useState } from "react";
 function PartOverview() {
   const router = useRouter();
   const { partId, projectId } = router.query;
+  const [editPartName, setEditPartName] = useState(false);
+  const [partNameUpdate, setPartNameUpdate] = useState("");
   // if (!partId) return null;
 
   // partId will be undefined on the first render.
@@ -25,7 +28,7 @@ function PartOverview() {
     fetcher
   );
 
-  const { data: partData } = useSWR(
+  const { data: partData, mutate: mutatePartData } = useSWR(
     () =>
       partId
         ? `
@@ -53,7 +56,44 @@ function PartOverview() {
       <Link href={`/projects/${projectId}`}>
         <a>Back</a>
       </Link>
-      <p>{part.name}</p>
+      {editPartName ? (
+        <div>
+          <input
+            type="text"
+            placeholder={part.name}
+            onChange={(e) => setPartNameUpdate(e.target.value)}
+          />
+          <button
+            onClick={async () => {
+              await axios.post("/api/graphql", {
+                query: `
+                  mutation($partId: String!, $partName: String!){
+                    updatePartName(partId:$partId, partName:$partName){
+                     name
+                    }
+                  }
+                  
+                  `,
+                variables: {
+                  partId: part._id,
+                  partName: partNameUpdate,
+                },
+              });
+              setPartNameUpdate("");
+              setEditPartName(false);
+              mutatePartData();
+            }}
+            disabled={partNameUpdate.length === 0}
+          >
+            Save
+          </button>
+          <button onClick={() => setEditPartName(false)}>Cancel</button>
+        </div>
+      ) : (
+        <p className="text-2xl" onClick={() => setEditPartName(true)}>
+          {part.name}
+        </p>
+      )}
       <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
         <a>New Scene</a>
       </Link>

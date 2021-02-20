@@ -14,10 +14,12 @@ const NoSSREditor = dynamic(
 function SceneOverview() {
   const router = useRouter();
 
+  const [editSceneName, setEditSceneName] = useState(false);
+  const [sceneNameUpdate, setSceneNameUpdate] = useState("");
   const [sceneText, setSceneText] = useState("");
   const { sceneId, partId, projectId } = router.query;
 
-  const { data: sceneData } = useSWR(
+  const { data: sceneData, mutate: mutateSceneData } = useSWR(
     () =>
       sceneId
         ? `
@@ -81,7 +83,44 @@ function SceneOverview() {
       <Link href={`/projects/${projectId}/${partId}`}>
         <a>Back</a>
       </Link>
-      <p>{sceneData.scene.name}</p>
+      {editSceneName ? (
+        <div>
+          <input
+            type="text"
+            placeholder={sceneData.scene.name}
+            onChange={(e) => setSceneNameUpdate(e.target.value)}
+          />
+          <button
+            onClick={async () => {
+              await axios.post("/api/graphql", {
+                query: `
+                  mutation($sceneId: String!, $sceneName: String!){
+                    updateSceneName(sceneId:$sceneId, sceneName:$sceneName){
+                     name
+                    }
+                  }
+                  
+                  `,
+                variables: {
+                  sceneId: sceneData.scene._id,
+                  sceneName: sceneNameUpdate,
+                },
+              });
+              setSceneNameUpdate("");
+              setEditSceneName(false);
+              mutateSceneData();
+            }}
+            disabled={sceneNameUpdate.length === 0}
+          >
+            Save
+          </button>
+          <button onClick={() => setEditSceneName(false)}>Cancel</button>
+        </div>
+      ) : (
+        <p className="text-2xl" onClick={() => setEditSceneName(true)}>
+          {sceneData.scene.name}
+        </p>
+      )}
       <NoSSREditor initialText={sceneText} setText={setSceneText} />
       <button onClick={saveText}>Save text</button>
     </div>

@@ -55,3 +55,13 @@ export const userOwnsProject = async ({ userId, projectId }) => {
     throw e;
   }
 };
+
+export const updateProjectName = async ({ projectId, name }) => {
+  try {
+    await connectToDatabase();
+    const project = await Project.findByIdAndUpdate(projectId, { name }).lean();
+    return project;
+  } catch (e) {
+    throw e;
+  }
+};
