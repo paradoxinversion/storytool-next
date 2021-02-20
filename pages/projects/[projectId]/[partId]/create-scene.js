@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import Auth from "../../../../hooks/useAuthentication";
 import dynamic from "next/dynamic";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const NoSSREditor = dynamic(
   () => import("../../../../componenents/SceneEditor"),
@@ -12,21 +12,10 @@ const NoSSREditor = dynamic(
 );
 function CreateScene() {
   const router = useRouter();
-  const UserData = Auth.useContainer();
-  const [formData, setFormData] = useState(() => ({
-    sceneName: "",
-  }));
+
   const [sceneText, setSceneText] = useState("");
 
-  const onChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (formData) => {
     const result = await axios.post("/api/graphql", {
       query: `
         mutation($sceneName: String!, $text: String!  $projectId: String!, $partId: String!){
@@ -51,16 +40,27 @@ function CreateScene() {
   };
 
   return (
-    <form>
-      <input
-        type="text"
-        name="sceneName"
-        onChange={onChange}
-        placeholder="Scene Name"
-      />
-      <NoSSREditor setText={setSceneText} />
-      <button onClick={onSubmit}>Test</button>
-    </form>
+    <div className="w-full">
+      <Formik
+        initialValues={{ sceneName: "" }}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+      >
+        <Form>
+          <Field
+            className="input"
+            type="text"
+            name="sceneName"
+            placeholder="Scene Name"
+          />
+          <NoSSREditor setText={setSceneText} />
+          <button className="btn" type="submit">
+            Create Scene
+          </button>
+        </Form>
+      </Formik>
+    </div>
   );
 }
 export default CreateScene;

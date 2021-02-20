@@ -9,6 +9,7 @@ import {
   createScene,
   getScene,
   updateSceneText,
+  getUserScenes,
 } from "../../actions/scene";
 import {
   createProject,
@@ -35,6 +36,7 @@ const typeDefs = gql`
     part(partId: String!): Part
     partScenes(partId: String!): [Scene]
     scene(sceneId: String!): Scene
+    userScenes: [Scene]
   }
 
   type Mutation {
@@ -130,6 +132,10 @@ const resolvers = {
     async scene(parent, { sceneId }, context) {
       const scene = await getScene(sceneId);
       return scene;
+    },
+    async userScenes(parent, args, context) {
+      const scenes = await getUserScenes(context.user.id);
+      return scenes;
     },
   },
   Mutation: {

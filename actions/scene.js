@@ -4,9 +4,7 @@ import Scene from "../db/models/Scene";
 export const getScene = async (sceneId) => {
   try {
     await connectToDatabase();
-    console.log(sceneId);
     const scene = await Scene.findById(sceneId).lean();
-    console.log(scene);
     return scene;
   } catch (e) {
     throw e;
@@ -30,7 +28,6 @@ export const createScene = async ({
 }) => {
   try {
     await connectToDatabase();
-    console.log(name, text, ownerId, projectId, partId);
     const scene = new Scene({
       name,
       text,
@@ -54,6 +51,17 @@ export const updateSceneText = async ({ sceneId, sceneText }) => {
       { new: true, select: "text" }
     );
     return sceneUpdate;
+  } catch (e) {
+    throw e;
+  }
+};
+export const getUserScenes = async (userId) => {
+  try {
+    await connectToDatabase();
+    const scenes = await Scene.find({ owner: userId }).populate("project part");
+
+    console.log(scenes);
+    return scenes;
   } catch (e) {
     throw e;
   }

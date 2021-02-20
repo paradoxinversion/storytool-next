@@ -17,7 +17,7 @@ function SceneOverview() {
   const [sceneText, setSceneText] = useState("");
   const { sceneId, partId, projectId } = router.query;
 
-  const { data: sceneData, mutate } = useSWR(
+  const { data: sceneData } = useSWR(
     () =>
       sceneId
         ? `
@@ -34,6 +34,7 @@ function SceneOverview() {
   );
 
   useEffect(() => {
+    console.log("Scene data effect in Scene Overview", sceneData);
     if (sceneData) {
       setSceneText(sceneData.scene.text);
     }

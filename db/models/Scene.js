@@ -5,7 +5,7 @@ const SceneSchema = new Schema({
   text: { type: String, required: true },
   owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
   project: { type: Schema.Types.ObjectId, ref: "Project", required: true },
-  part: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+  part: { type: Schema.Types.ObjectId, ref: "Part", required: true },
 });
 
 let Scene;

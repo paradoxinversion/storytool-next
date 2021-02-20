@@ -14,7 +14,6 @@ export const getUserProjects = async (userId) => {
   try {
     await connectToDatabase();
     const projects = await Project.find({ owner: userId }).lean();
-    console.log(projects);
     return projects;
   } catch (e) {
     throw e;

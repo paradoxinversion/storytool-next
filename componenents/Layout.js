@@ -29,9 +29,7 @@ function Layout({ children }) {
           Story Tool <em>Next</em>
         </p>
       </header>
-      <main className="container flex h-full flex-grow mx-auto overflow-y-scroll">
-        {children}
-      </main>
+      <main className="flex h-full flex-grow">{children}</main>
       <footer className="bg-red-500 text-xs text-center">
         <p className="m-2">(C)2019 Paradox Inversion Press</p>
       </footer>

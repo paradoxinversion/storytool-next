@@ -45,15 +45,14 @@ function ProjectOverview() {
   const { project } = projectData;
   const { projectParts: parts } = projectParts;
   return (
-    <div>
+    <div className="m-4 w-full">
+      <Link href={`/dashboard`}>
+        <a>Back to Dashboard</a>
+      </Link>
       <p>{project.name}</p>
-      <button
-        onClick={() => {
-          router.push(`/projects/${project._id}/create-part`);
-        }}
-      >
-        Create Part
-      </button>
+      <Link href={`/projects/${project._id}/create-part`}>
+        <a>Create a Part</a>
+      </Link>
       <div>
         {parts.map((projectPart, index) => (
           <div key={projectPart._id}>

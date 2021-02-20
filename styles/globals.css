@@ -9,4 +9,8 @@ a {
   @apply border rounded px-4;
 }
 
+.input {
+  @apply h-8 border rounded;
+}
+
 @tailwind utilities;

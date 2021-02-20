@@ -50,6 +50,9 @@ function PartOverview() {
   const { part } = partData;
   return (
     <div>
+      <Link href={`/projects/${projectId}`}>
+        <a>Back</a>
+      </Link>
       <p>{part.name}</p>
       <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
         <a>New Scene</a>

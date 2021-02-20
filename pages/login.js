@@ -1,22 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import Auth from "../hooks/useAuthentication";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 function Login() {
   const router = useRouter();
-  const UserData = Auth.useContainer();
-  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isRegister, setIsRegister] = useState(false);
 
-  const onChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (values) => {
     let result;
     if (isRegister) {
       result = await axios.post("/api/graphql", {
@@ -33,10 +23,9 @@ function Login() {
         
         `,
         variables: {
-          ...formData,
+          ...values,
         },
       });
-      UserData.setUser(result.data.data.login.user);
       router.push("/dashboard");
     } else {
       result = await axios.post("/api/graphql", {
@@ -54,42 +43,56 @@ function Login() {
         
         `,
         variables: {
-          ...formData,
+          ...values,
         },
       });
-
-      UserData.setUser(result.data.data.login.user);
 
       router.push("/dashboard");
     }
   };
-  return (
-    <form>
-      <input
-        type="text"
-        name="username"
-        onChange={onChange}
-        placeholder="Username"
-      />
-      <input
-        type="text"
-        name="password"
-        onChange={onChange}
-        placeholder="Username"
-      />
-      <label htmlFor="register-check">Registering?</label>
-      <input
-        type="checkbox"
-        value={isRegister}
-        name="register-check"
-        id="register-check"
-        onChange={(e) => {
-          setIsRegister(e.target.checked);
-        }}
-      />
 
-      <button onClick={onSubmit}>Test</button>
-    </form>
+  return (
+    <div className="flex justify-center w-full">
+      <Formik
+        initialValues={{ username: "", password: "" }}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+      >
+        {({ values }) => (
+          <Form className="grid grid-cols-1 auto-rows-min">
+            <Field
+              className="input"
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={values.username}
+            />
+            <Field
+              className="input"
+              type="text"
+              name="password"
+              placeholder="Password"
+              value={values.password}
+            />
+            <label htmlFor="register-check">
+              Registering?
+              <input
+                type="checkbox"
+                value={isRegister}
+                name="register-check"
+                id="register-check"
+                onChange={(e) => {
+                  setIsRegister(e.target.checked);
+                }}
+              />
+            </label>
+
+            <button type="submit">Submit</button>
+          </Form>
+        )}
+      </Formik>
+    </div>
   );
 }
 export default Login;

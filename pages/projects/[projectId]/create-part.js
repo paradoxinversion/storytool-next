@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Auth from "../../../hooks/useAuthentication";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
 function CreatePart() {
   const router = useRouter();
   const UserData = Auth.useContainer();
@@ -16,8 +18,7 @@ function CreatePart() {
     });
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (values) => {
     const result = await axios.post("/api/graphql", {
       query: `
         mutation($partName: String!,  $projectId: String!){
@@ -32,7 +33,7 @@ function CreatePart() {
 
         `,
       variables: {
-        ...formData,
+        ...values,
         projectId: router.query.projectId,
       },
     });
@@ -40,15 +41,21 @@ function CreatePart() {
   };
 
   return (
-    <form>
-      <input
-        type="text"
-        name="partName"
-        onChange={onChange}
-        placeholder="Part Name"
-      />
-      <button onClick={onSubmit}>Test</button>
-    </form>
+    <div>
+      <Formik
+        initialValues={{ partName: "" }}
+        onSubmit={(values) => {
+          onSubmit(values);
+        }}
+      >
+        <Form className="grid grid-cols-1 auto-rows-min">
+          <Field type="text" name="partName" placeholder="Part Name" />
+          <button className="btn" type="submit">
+            Create Part
+          </button>
+        </Form>
+      </Formik>
+    </div>
   );
 }
 export default CreatePart;

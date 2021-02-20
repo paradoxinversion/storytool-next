@@ -9,7 +9,7 @@ export default function Dashboard() {
   const UserData = Auth.useContainer();
   const router = useRouter();
 
-  const { data: userProjects, error } = useSWR(
+  const { data: userProjects } = useSWR(
     `
     {
       projects{
@@ -21,6 +21,28 @@ export default function Dashboard() {
     fetcher
   );
 
+  const { data: userScenes } = useSWR(
+    () =>
+      UserData.user._id
+        ? `
+    {
+      userScenes{
+        _id
+        name
+        project{
+          _id
+          name
+        }
+        part{
+          _id
+          name
+        }
+      }
+    }
+  `
+        : null,
+    fetcher
+  );
   if (!UserData.user)
     return (
       <Link href="/login">
@@ -35,9 +57,15 @@ export default function Dashboard() {
       </div>
     );
   }
-
+  if (!userScenes) {
+    return (
+      <div>
+        Loading User Scenes... This may take so time, please be patient.
+      </div>
+    );
+  }
   const { projects } = userProjects;
-
+  const { userScenes: scenes } = userScenes;
   return (
     <div id="dashboard" className="m-4 w-full">
       <p className="text-2xl">Dashboard</p>
@@ -49,20 +77,48 @@ export default function Dashboard() {
       >
         New Project
       </button>
-      <div id="projects">
-        {projects.map((project) => (
-          <div key={project._id}>
-            <p>{project.name}</p>
-            <button
-              onClick={() => {
-                router.push(`/projects/${project._id}`);
-              }}
+      <section id="projects">
+        <p>Projects</p>
+        <div className="grid grid-cols-3 gap-8">
+          {projects.map((project) => (
+            <div
+              key={project._id}
+              className="border rounded text-center p-4 h-24"
             >
-              Go To
-            </button>
-          </div>
-        ))}
-      </div>
+              <Link href={`/projects/${project._id}`}>
+                <a className="underline">{project.name} </a>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section id="scenes">
+        <p>Scenes</p>
+        <div className="grid grid-cols-3 gap-8">
+          {scenes.map((scene) => (
+            <div
+              key={scene._id}
+              className="border rounded text-center p-4 h-32"
+            >
+              <Link
+                href={`/projects/${scene.project._id}/${scene.part._id}/${scene._id}`}
+              >
+                <a className="underline">{`${scene.name.slice(0, 20)}...`} </a>
+              </Link>
+              <p className="text-sm text-left">
+                {`Project: ${scene.project.name.slice(0, 20)}${
+                  scene.project.name.length > 20 ? "..." : ""
+                }`}
+              </p>
+              <p className="text-sm text-left">
+                {`Part: ${scene.part.name.slice(0, 20)}${
+                  scene.part.name.length > 20 ? "..." : ""
+                }`}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

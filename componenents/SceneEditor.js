@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Editor, EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "draft-js/dist/Draft.css";
+import Head from "next/head";
 
 function SceneEditor({ setText, initialText }) {
   const [editorState, setEditorState] = useState(() =>
@@ -9,10 +10,18 @@ function SceneEditor({ setText, initialText }) {
       : EditorState.createEmpty()
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (!initialText) return;
+    setEditorState(
+      EditorState.createWithContent(convertFromRaw(JSON.parse(initialText)))
+    );
+  }, [initialText]);
   return (
     <div>
-      <div className="border w-full">
+      <Head>
+        <meta charset="utf-8" />
+      </Head>
+      <div className="border w-full h-96 overflow-y-scroll">
         <Editor
           editorState={editorState}
           onChange={setEditorState}
