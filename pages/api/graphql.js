@@ -8,6 +8,7 @@ import {
   deletePart,
   getPart,
   getProjectParts,
+  userOwnsPart,
 } from "../../actions/part";
 import {
   getPartScenes,
@@ -16,12 +17,14 @@ import {
   updateSceneText,
   getUserScenes,
   deleteScene,
+  userOwnsScene,
 } from "../../actions/scene";
 import {
   createProject,
   deleteProject,
   getProject,
   getUserProjects,
+  userOwnsProject,
 } from "../../actions/project";
 
 const verifyToken = (token) => {
@@ -113,6 +116,10 @@ const resolvers = {
     },
     async project(parent, { projectId }, context) {
       try {
+        console.log(context.user.id);
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const userProject = await getProject(projectId);
         return userProject;
       } catch (e) {
@@ -128,20 +135,48 @@ const resolvers = {
       }
     },
     async projectParts(parent, { projectId }, context) {
-      const parts = await getProjectParts(projectId);
-      return parts;
+      try {
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const parts = await getProjectParts(projectId);
+        return parts;
+      } catch (e) {
+        throw e;
+      }
     },
     async part(parent, { partId }, context) {
-      const part = await getPart(partId);
-      return part;
+      try {
+        if (!(await userOwnsPart({ partId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const part = await getPart(partId);
+        return part;
+      } catch (e) {
+        throw e;
+      }
     },
     async partScenes(parent, { partId }, context) {
-      const parts = await getPartScenes(partId);
-      return parts;
+      try {
+        if (!(await userOwnsPart({ partId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const parts = await getPartScenes(partId);
+        return parts;
+      } catch (e) {
+        throw e;
+      }
     },
     async scene(parent, { sceneId }, context) {
-      const scene = await getScene(sceneId);
-      return scene;
+      try {
+        if (!(await userOwnsScene({ sceneId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        const scene = await getScene(sceneId);
+        return scene;
+      } catch (e) {
+        throw e;
+      }
     },
     async userScenes(parent, args, context) {
       const scenes = await getUserScenes(context.user.id);
@@ -199,6 +234,9 @@ const resolvers = {
     },
     async createPart(parent, { partName, projectId }, context) {
       try {
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const part = await createPart({
           partName,
           ownerId: context.user.id,
@@ -211,6 +249,12 @@ const resolvers = {
     },
     async createScene(parent, { sceneName, text, projectId, partId }, context) {
       try {
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
+        if (!(await userOwnsPart({ partId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const scene = await createScene({
           name: sceneName,
           text,
@@ -225,6 +269,9 @@ const resolvers = {
     },
     async updateSceneText(parent, { sceneId, text }, context) {
       try {
+        if (!(await userOwnsScene({ sceneId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const sceneUpdate = await updateSceneText({ sceneId, sceneText: text });
         return { project: null, part: null, scene: sceneUpdate, error: null };
       } catch (e) {
@@ -233,6 +280,9 @@ const resolvers = {
     },
     async deleteScene(parent, { sceneId }, context) {
       try {
+        if (!(await userOwnsScene({ sceneId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const sceneDeletion = await deleteScene(sceneId);
         return { project: null, part: null, scene: sceneDeletion, error: null };
       } catch (e) {
@@ -241,6 +291,9 @@ const resolvers = {
     },
     async deletePart(parent, { partId }, context) {
       try {
+        if (!(await userOwnsPart({ partId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const partDeletion = await deletePart(partId);
         return { project: null, part: partDeletion, scene: null, error: null };
       } catch (e) {
@@ -249,6 +302,9 @@ const resolvers = {
     },
     async deleteProject(parent, { projectId }, context) {
       try {
+        if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
+          throw new Error("User does not own this Asset.");
+        }
         const projectDeletion = await deleteProject(projectId);
         return {
           project: projectDeletion,

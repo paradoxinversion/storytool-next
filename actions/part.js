@@ -38,10 +38,21 @@ export const deletePart = async (partId) => {
   try {
     await connectToDatabase();
     // first we need to delete the scenes related to this part
-    const scenesToDelete = await Scene.deleteMany({ part: partId });
+    await Scene.deleteMany({ part: partId });
     // Now, delete the part
     const partDeletion = await Part.findByIdAndRemove(partId);
     return partDeletion;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const userOwnsPart = async ({ userId, partId }) => {
+  try {
+    await connectToDatabase();
+    const part = await Part.findById(partId);
+    console.log(part.owner, userId);
+    return userId.toString() === part.owner.toString();
   } catch (e) {
     throw e;
   }

@@ -46,3 +46,12 @@ export const deleteProject = async (projectId) => {
     throw e;
   }
 };
+export const userOwnsProject = async ({ userId, projectId }) => {
+  try {
+    await connectToDatabase();
+    const project = await Project.findById(projectId);
+    return userId.toString() === project.owner.toString();
+  } catch (e) {
+    throw e;
+  }
+};

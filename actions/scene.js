@@ -74,3 +74,13 @@ export const deleteScene = async (sceneId) => {
     throw e;
   }
 };
+
+export const userOwnsScene = async ({ userId, sceneId }) => {
+  try {
+    await connectToDatabase();
+    const scene = await Scene.findById(sceneId);
+    return userId.toString() === scene.owner.toString();
+  } catch (e) {
+    throw e;
+  }
+};
