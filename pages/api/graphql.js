@@ -3,16 +3,23 @@ import jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { logInUser, registerUser, returnUser } from "../../actions/user";
 
-import { createPart, getPart, getProjectParts } from "../../actions/part";
+import {
+  createPart,
+  deletePart,
+  getPart,
+  getProjectParts,
+} from "../../actions/part";
 import {
   getPartScenes,
   createScene,
   getScene,
   updateSceneText,
   getUserScenes,
+  deleteScene,
 } from "../../actions/scene";
 import {
   createProject,
+  deleteProject,
   getProject,
   getUserProjects,
 } from "../../actions/project";
@@ -51,6 +58,9 @@ const typeDefs = gql`
       partId: String!
     ): CreationResult
     updateSceneText(text: String!, sceneId: String!): CreationResult
+    deleteScene(sceneId: String!): CreationResult
+    deletePart(partId: String): CreationResult
+    deleteProject(projectId: String): CreationResult
   }
   type User {
     _id: String
@@ -217,6 +227,35 @@ const resolvers = {
       try {
         const sceneUpdate = await updateSceneText({ sceneId, sceneText: text });
         return { project: null, part: null, scene: sceneUpdate, error: null };
+      } catch (e) {
+        return { project: null, part: null, scene: null, error: e.message };
+      }
+    },
+    async deleteScene(parent, { sceneId }, context) {
+      try {
+        const sceneDeletion = await deleteScene(sceneId);
+        return { project: null, part: null, scene: sceneDeletion, error: null };
+      } catch (e) {
+        return { project: null, part: null, scene: null, error: e.message };
+      }
+    },
+    async deletePart(parent, { partId }, context) {
+      try {
+        const partDeletion = await deletePart(partId);
+        return { project: null, part: partDeletion, scene: null, error: null };
+      } catch (e) {
+        return { project: null, part: null, scene: null, error: e.message };
+      }
+    },
+    async deleteProject(parent, { projectId }, context) {
+      try {
+        const projectDeletion = await deleteProject(projectId);
+        return {
+          project: projectDeletion,
+          part: null,
+          scene: null,
+          error: null,
+        };
       } catch (e) {
         return { project: null, part: null, scene: null, error: e.message };
       }

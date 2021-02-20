@@ -2,7 +2,7 @@ import useSWR from "swr";
 import fetcher from "../../../utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
+import axios from "axios";
 function PartOverview() {
   const router = useRouter();
   const { partId, projectId } = router.query;
@@ -49,7 +49,7 @@ function PartOverview() {
   }
   const { part } = partData;
   return (
-    <div>
+    <div className="w-full">
       <Link href={`/projects/${projectId}`}>
         <a>Back</a>
       </Link>
@@ -57,16 +57,54 @@ function PartOverview() {
       <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
         <a>New Scene</a>
       </Link>
-      {partScenes.partScenes.map((partScene, index) => (
-        <div key={partScene._id}>
-          <p>
-            {index + 1}: {partScene.name}
-          </p>
-          <Link href={`/projects/${projectId}/${partId}/${partScene._id}`}>
-            <a>Go to</a>
-          </Link>
-        </div>
-      ))}
+      <div className="grid grid-cols-1">
+        {partScenes.partScenes.map((scene, index) => (
+          <div key={scene._id} className="border p-2">
+            <p>
+              {`${index + 1}: ${scene.name.slice(0, 20)}${
+                scene.name.length > 0 ? "..." : ""
+              }`}
+            </p>
+            <Link href={`/projects/${projectId}/${partId}/${scene._id}`}>
+              <a>Go to</a>
+            </Link>
+            <button
+              className="block btn"
+              onClick={async (e) => {
+                e.preventDefault();
+                if (
+                  window.confirm(
+                    `You are about to delete ${scene.name}. Are you sure you'd like to do that?`
+                  )
+                ) {
+                  const result = await axios.post("/api/graphql", {
+                    query: `
+                      mutation($sceneId: String!){
+                        deleteScene(sceneId:$sceneId){
+                          scene{
+                            _id
+                            name
+                          
+                          }
+                        }
+                      }
+                      
+                      `,
+                    variables: {
+                      sceneId: scene._id,
+                    },
+                  });
+
+                  const data = await mutate();
+                  console.log(data);
+                }
+              }}
+            >
+              Delete Scene
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

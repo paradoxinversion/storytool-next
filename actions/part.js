@@ -1,6 +1,6 @@
 import { connectToDatabase } from "../utils/mongodb";
 import Part from "../db/models/Part";
-
+import Scene from "../db/models/Scene";
 export const getPart = async (partId) => {
   try {
     await connectToDatabase();
@@ -29,6 +29,19 @@ export const createPart = async ({ partName, ownerId, projectId }) => {
     });
     part.save();
     return part;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const deletePart = async (partId) => {
+  try {
+    await connectToDatabase();
+    // first we need to delete the scenes related to this part
+    const scenesToDelete = await Scene.deleteMany({ part: partId });
+    // Now, delete the part
+    const partDeletion = await Part.findByIdAndRemove(partId);
+    return partDeletion;
   } catch (e) {
     throw e;
   }

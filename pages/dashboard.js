@@ -4,12 +4,12 @@ import Auth from "../hooks/useAuthentication";
 import Link from "next/link";
 import fetcher from "../utils/fetcher";
 import { useRouter } from "next/router";
-
+import axios from "axios";
 export default function Dashboard() {
   const UserData = Auth.useContainer();
   const router = useRouter();
 
-  const { data: userProjects } = useSWR(
+  const { data: userProjects, mutate: mutateProjects } = useSWR(
     `
     {
       projects{
@@ -21,7 +21,7 @@ export default function Dashboard() {
     fetcher
   );
 
-  const { data: userScenes } = useSWR(
+  const { data: userScenes, mutate: mutateScenes } = useSWR(
     () =>
       UserData.user._id
         ? `
@@ -81,13 +81,44 @@ export default function Dashboard() {
         <p>Projects</p>
         <div className="grid grid-cols-3 gap-8">
           {projects.map((project) => (
-            <div
-              key={project._id}
-              className="border rounded text-center p-4 h-24"
-            >
+            <div key={project._id} className="asset-card">
               <Link href={`/projects/${project._id}`}>
                 <a className="underline">{project.name} </a>
               </Link>
+              <button
+                className="block btn"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm(
+                      `You are about to delete ${project.name}. Are you sure you'd like to do that?`
+                    )
+                  ) {
+                    const result = await axios.post("/api/graphql", {
+                      query: `
+                      mutation($projectId: String!){
+                        deleteProject(projectId:$projectId){
+                          project{
+                            _id
+                            name
+                          
+                          }
+                        }
+                      }
+                      
+                      `,
+                      variables: {
+                        projectId: project._id,
+                      },
+                    });
+
+                    await mutateProjects();
+                    await mutateScenes();
+                  }
+                }}
+              >
+                Delete Project
+              </button>
             </div>
           ))}
         </div>
@@ -96,10 +127,7 @@ export default function Dashboard() {
         <p>Scenes</p>
         <div className="grid grid-cols-3 gap-8">
           {scenes.map((scene) => (
-            <div
-              key={scene._id}
-              className="border rounded text-center p-4 h-32"
-            >
+            <div key={scene._id} className="asset-card">
               <Link
                 href={`/projects/${scene.project._id}/${scene.part._id}/${scene._id}`}
               >

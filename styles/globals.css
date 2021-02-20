@@ -13,4 +13,8 @@ a {
   @apply h-8 border rounded;
 }
 
+.asset-card {
+  @apply border rounded text-center p-4 h-32;
+}
+
 @tailwind utilities;

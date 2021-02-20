@@ -19,6 +19,7 @@ export async function connectToDatabase() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
+      useFindAndModify: false,
     });
     connection.isConnected = db.connections[0].readyState;
 

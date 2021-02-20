@@ -1,5 +1,7 @@
 import { connectToDatabase } from "../utils/mongodb";
 import Project from "../db/models/Project";
+import Scene from "../db/models/Scene";
+import Part from "../db/models/Part";
 
 export const getProject = async (projectId) => {
   try {
@@ -28,6 +30,18 @@ export const createProject = async ({ projectName, ownerId }) => {
     });
     project.save();
     return project;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const deleteProject = async (projectId) => {
+  try {
+    await connectToDatabase();
+    await Scene.deleteMany({ project: projectId });
+    await Part.deleteMany({ project: projectId });
+    const projectDeletion = await Project.findByIdAndRemove(projectId);
+    return projectDeletion;
   } catch (e) {
     throw e;
   }

@@ -59,9 +59,17 @@ export const getUserScenes = async (userId) => {
   try {
     await connectToDatabase();
     const scenes = await Scene.find({ owner: userId }).populate("project part");
-
-    console.log(scenes);
     return scenes;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const deleteScene = async (sceneId) => {
+  try {
+    await connectToDatabase();
+    const sceneDeletion = await Scene.findByIdAndRemove(sceneId);
+    return sceneDeletion;
   } catch (e) {
     throw e;
   }
