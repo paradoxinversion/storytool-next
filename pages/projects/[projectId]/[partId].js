@@ -53,22 +53,23 @@ function PartOverview() {
   const { part } = partData;
   return (
     <div className="w-full m-4">
-      <Link href={`/projects/${projectId}`}>
-        <a>Back to Project</a>
-      </Link>
-      {editPartName ? (
-        <div>
-          <input
-            className="text-2xl"
-            type="text"
-            placeholder={part.name}
-            onChange={(e) => setPartNameUpdate(e.target.value)}
-          />
-          <button
-            className="btn mr-4"
-            onClick={async () => {
-              await axios.post("/api/graphql", {
-                query: `
+      <header>
+        <Link href={`/projects/${projectId}`}>
+          <a>Back to Project</a>
+        </Link>
+        {editPartName ? (
+          <div>
+            <input
+              className="text-2xl"
+              type="text"
+              placeholder={part.name}
+              onChange={(e) => setPartNameUpdate(e.target.value)}
+            />
+            <button
+              className="btn mr-4"
+              onClick={async () => {
+                await axios.post("/api/graphql", {
+                  query: `
                   mutation($partId: String!, $partName: String!){
                     updatePartName(partId:$partId, partName:$partName){
                      name
@@ -76,53 +77,58 @@ function PartOverview() {
                   }
                   
                   `,
-                variables: {
-                  partId: part._id,
-                  partName: partNameUpdate,
-                },
-              });
-              setPartNameUpdate("");
-              setEditPartName(false);
-              mutatePartData();
-            }}
-            disabled={partNameUpdate.length === 0}
-          >
-            Save
-          </button>
-          <button className="btn" onClick={() => setEditPartName(false)}>
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <p className="text-2xl" onClick={() => setEditPartName(true)}>
-          {part.name}
-        </p>
-      )}
-      <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
-        <a className="mb-4 block text-right">New Scene</a>
-      </Link>
-      <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
-        {partScenes.partScenes.map((scene, index) => (
-          <div key={scene._id} className="asset-card bg-white shadow mb-2 ">
-            <p>
-              {`${index + 1}: ${scene.name.slice(0, 20)}${
-                scene.name.length > 0 ? "..." : ""
-              }`}
-            </p>
-            <Link href={`/projects/${projectId}/${partId}/${scene._id}`}>
-              <a className="mb-2">Go to</a>
-            </Link>
-            <button
-              className="block btn"
-              onClick={async (e) => {
-                e.preventDefault();
-                if (
-                  window.confirm(
-                    `You are about to delete ${scene.name}. Are you sure you'd like to do that?`
-                  )
-                ) {
-                  const result = await axios.post("/api/graphql", {
-                    query: `
+                  variables: {
+                    partId: part._id,
+                    partName: partNameUpdate,
+                  },
+                });
+                setPartNameUpdate("");
+                setEditPartName(false);
+                mutatePartData();
+              }}
+              disabled={partNameUpdate.length === 0}
+            >
+              Save
+            </button>
+            <button className="btn" onClick={() => setEditPartName(false)}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <p className="text-2xl" onClick={() => setEditPartName(true)}>
+            {part.name}
+          </p>
+        )}
+      </header>
+      <section>
+        <header className="flex justify-between">
+          <p className="text-xl">Scenes</p>
+          <Link href={`/projects/${projectId}/${part._id}/create-scene`}>
+            <a className="mb-4 block text-right">New Scene</a>
+          </Link>
+        </header>
+        <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
+          {partScenes.partScenes.map((scene, index) => (
+            <div key={scene._id} className="asset-card bg-white shadow mb-2 ">
+              <Link href={`/projects/${projectId}/${partId}/${scene._id}`}>
+                <a className="mb-2">
+                  {" "}
+                  {`${scene.name.slice(0, 20)}${
+                    scene.name.length > 20 ? "..." : ""
+                  }`}
+                </a>
+              </Link>
+              <button
+                className="block btn"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm(
+                      `You are about to delete ${scene.name}. Are you sure you'd like to do that?`
+                    )
+                  ) {
+                    const result = await axios.post("/api/graphql", {
+                      query: `
                       mutation($sceneId: String!){
                         deleteScene(sceneId:$sceneId){
                           scene{
@@ -134,21 +140,22 @@ function PartOverview() {
                       }
                       
                       `,
-                    variables: {
-                      sceneId: scene._id,
-                    },
-                  });
+                      variables: {
+                        sceneId: scene._id,
+                      },
+                    });
 
-                  const data = await mutate();
-                  console.log(data);
-                }
-              }}
-            >
-              Delete Scene
-            </button>
-          </div>
-        ))}
-      </div>
+                    const data = await mutate();
+                    console.log(data);
+                  }
+                }}
+              >
+                Delete Scene
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

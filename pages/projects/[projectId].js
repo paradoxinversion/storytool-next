@@ -95,33 +95,34 @@ function ProjectOverview() {
             {project.name}
           </p>
         )}
-        <Link href={`/projects/${project._id}/create-part`}>
-          <a className="block mb-4 text-right">Create a Part</a>
-        </Link>
       </header>
-      <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
-        {parts.map((projectPart, index) => (
-          <div
-            key={projectPart._id}
-            className="asset-card bg-white shadow mb-2"
-          >
-            <p>
-              {index + 1}: {projectPart.name}
-            </p>
-            <Link href={`/projects/${projectId}/${projectPart._id}`}>
-              <a className="mb-2">Go to</a>
-            </Link>
-            <button
-              className="block btn"
-              onClick={async (e) => {
-                e.preventDefault();
-                if (
-                  window.confirm(
-                    `You are about to delete ${projectPart.name}. Are you sure you'd like to do that?`
-                  )
-                ) {
-                  const result = await axios.post("/api/graphql", {
-                    query: `
+      <section>
+        <header className="flex justify-between">
+          <p className="text-xl">Parts</p>
+          <Link href={`/projects/${project._id}/create-part`}>
+            <a className="block mb-4 text-right">Create a Part</a>
+          </Link>
+        </header>
+        <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
+          {parts.map((projectPart, index) => (
+            <div
+              key={projectPart._id}
+              className="asset-card bg-white shadow mb-2"
+            >
+              <Link href={`/projects/${projectId}/${projectPart._id}`}>
+                <a className="mb-2">{projectPart.name}</a>
+              </Link>
+              <button
+                className="block btn"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm(
+                      `You are about to delete ${projectPart.name}. Are you sure you'd like to do that?`
+                    )
+                  ) {
+                    const result = await axios.post("/api/graphql", {
+                      query: `
                       mutation($partId: String!){
                         deletePart(partId:$partId){
                           part{
@@ -133,20 +134,21 @@ function ProjectOverview() {
                       }
                       
                       `,
-                    variables: {
-                      partId: projectPart._id,
-                    },
-                  });
+                      variables: {
+                        partId: projectPart._id,
+                      },
+                    });
 
-                  await mutate();
-                }
-              }}
-            >
-              Delete Part
-            </button>
-          </div>
-        ))}
-      </div>
+                    await mutate();
+                  }
+                }}
+              >
+                Delete Part
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

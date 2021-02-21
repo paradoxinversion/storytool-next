@@ -74,14 +74,10 @@ export default function Dashboard() {
       <section id="projects" className="mb-4">
         <header className="mb-2 flex justify-between">
           <span className="text-xl">Projects</span>
-          <button
-            className="btn"
-            onClick={() => {
-              router.push("/create-project");
-            }}
-          >
-            New Project
-          </button>
+
+          <Link href={`/create-project`}>
+            <a>Create Project</a>
+          </Link>
         </header>
         <div className="bg-gray-100 p-4 border rounded shadow-inner h-48 overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4">
           {projects.map((project) => (
