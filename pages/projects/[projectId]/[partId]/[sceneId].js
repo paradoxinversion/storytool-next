@@ -79,21 +79,24 @@ function SceneOverview() {
   };
 
   return (
-    <div className="container">
-      <Link href={`/projects/${projectId}/${partId}`}>
-        <a>Back</a>
-      </Link>
-      {editSceneName ? (
-        <div>
-          <input
-            type="text"
-            placeholder={sceneData.scene.name}
-            onChange={(e) => setSceneNameUpdate(e.target.value)}
-          />
-          <button
-            onClick={async () => {
-              await axios.post("/api/graphql", {
-                query: `
+    <div className="m-4 w-full">
+      <header className="mb-4">
+        <Link href={`/projects/${projectId}/${partId}`}>
+          <a>Back</a>
+        </Link>
+        {editSceneName ? (
+          <div>
+            <input
+              className="text-2xl"
+              type="text"
+              placeholder={sceneData.scene.name}
+              onChange={(e) => setSceneNameUpdate(e.target.value)}
+            />
+            <button
+              className="btn mr-4"
+              onClick={async () => {
+                await axios.post("/api/graphql", {
+                  query: `
                   mutation($sceneId: String!, $sceneName: String!){
                     updateSceneName(sceneId:$sceneId, sceneName:$sceneName){
                      name
@@ -101,28 +104,35 @@ function SceneOverview() {
                   }
                   
                   `,
-                variables: {
-                  sceneId: sceneData.scene._id,
-                  sceneName: sceneNameUpdate,
-                },
-              });
-              setSceneNameUpdate("");
-              setEditSceneName(false);
-              mutateSceneData();
-            }}
-            disabled={sceneNameUpdate.length === 0}
-          >
-            Save
-          </button>
-          <button onClick={() => setEditSceneName(false)}>Cancel</button>
-        </div>
-      ) : (
-        <p className="text-2xl" onClick={() => setEditSceneName(true)}>
-          {sceneData.scene.name}
-        </p>
-      )}
-      <NoSSREditor initialText={sceneText} setText={setSceneText} />
-      <button onClick={saveText}>Save text</button>
+                  variables: {
+                    sceneId: sceneData.scene._id,
+                    sceneName: sceneNameUpdate,
+                  },
+                });
+                setSceneNameUpdate("");
+                setEditSceneName(false);
+                mutateSceneData();
+              }}
+              disabled={sceneNameUpdate.length === 0}
+            >
+              Save
+            </button>
+            <button className="btn" onClick={() => setEditSceneName(false)}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <p className="text-2xl" onClick={() => setEditSceneName(true)}>
+            {sceneData.scene.name}
+          </p>
+        )}
+      </header>
+      <div className="mb-4">
+        <NoSSREditor initialText={sceneText} setText={setSceneText} />
+      </div>
+      <button className="btn" onClick={saveText}>
+        Save text
+      </button>
     </div>
   );
 }

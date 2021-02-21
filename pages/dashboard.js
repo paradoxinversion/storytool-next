@@ -68,22 +68,26 @@ export default function Dashboard() {
   const { userScenes: scenes } = userScenes;
   return (
     <div id="dashboard" className="m-4 w-full">
-      <p className="text-2xl">Dashboard</p>
-      <button
-        className="btn"
-        onClick={() => {
-          router.push("/create-project");
-        }}
-      >
-        New Project
-      </button>
-      <section id="projects">
-        <p>Projects</p>
-        <div className="grid grid-cols-3 gap-8">
+      <header className="mb-4">
+        <p className="text-2xl">Dashboard</p>
+      </header>
+      <section id="projects" className="mb-4">
+        <header className="mb-2 flex justify-between">
+          <span className="text-xl">Projects</span>
+          <button
+            className="btn"
+            onClick={() => {
+              router.push("/create-project");
+            }}
+          >
+            New Project
+          </button>
+        </header>
+        <div className="bg-gray-100 p-4 border rounded shadow-inner h-48 overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4">
           {projects.map((project) => (
-            <div key={project._id} className="asset-card">
+            <div key={project._id} className="asset-card shadow bg-white mb-2">
               <Link href={`/projects/${project._id}`}>
-                <a className="underline">{project.name} </a>
+                <a className="underline mb-2">{project.name} </a>
               </Link>
               <button
                 className="block btn"
@@ -94,7 +98,7 @@ export default function Dashboard() {
                       `You are about to delete ${project.name}. Are you sure you'd like to do that?`
                     )
                   ) {
-                    const result = await axios.post("/api/graphql", {
+                    await axios.post("/api/graphql", {
                       query: `
                       mutation($projectId: String!){
                         deleteProject(projectId:$projectId){
@@ -123,11 +127,13 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
-      <section id="scenes">
-        <p>Scenes</p>
-        <div className="grid grid-cols-3 gap-8">
+      <section id="scenes" className="mb-4">
+        <header className="mb-2">
+          <p className="text-xl">Scenes</p>
+        </header>
+        <div className="bg-gray-100 border rounded p-4 shadow-inner  h-48 overflow-y-scroll grid grid-cols-2 gap-4 sm:grid-cols-3">
           {scenes.map((scene) => (
-            <div key={scene._id} className="asset-card">
+            <div key={scene._id} className="asset-card shadow bg-white">
               <Link
                 href={`/projects/${scene.project._id}/${scene.part._id}/${scene._id}`}
               >

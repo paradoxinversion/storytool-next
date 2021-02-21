@@ -126,7 +126,6 @@ const resolvers = {
     },
     async project(parent, { projectId }, context) {
       try {
-        console.log(context.user.id);
         if (!(await userOwnsProject({ projectId, userId: context.user.id }))) {
           throw new Error("User does not own this Asset.");
         }

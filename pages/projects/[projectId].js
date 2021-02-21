@@ -48,7 +48,7 @@ function ProjectOverview() {
   const { project } = projectData;
   const { projectParts: parts } = projectParts;
   return (
-    <div className="m-4 w-full">
+    <div className="m-4 w-full flex flex-col">
       <header>
         <Link href={`/dashboard`}>
           <a>Back to Dashboard</a>
@@ -56,11 +56,13 @@ function ProjectOverview() {
         {editProjectName ? (
           <div>
             <input
+              className="text-2xl w-40"
               type="text"
               placeholder={project.name}
               onChange={(e) => setProjectNameUpdate(e.target.value)}
             />
             <button
+              className="btn mr-4"
               onClick={async () => {
                 await axios.post("/api/graphql", {
                   query: `
@@ -84,7 +86,9 @@ function ProjectOverview() {
             >
               Save
             </button>
-            <button onClick={() => setEditProjectName(false)}>Cancel</button>
+            <button className="btn" onClick={() => setEditProjectName(false)}>
+              Cancel
+            </button>
           </div>
         ) : (
           <p className="text-2xl" onClick={() => setEditProjectName(true)}>
@@ -92,17 +96,20 @@ function ProjectOverview() {
           </p>
         )}
         <Link href={`/projects/${project._id}/create-part`}>
-          <a>Create a Part</a>
+          <a className="block mb-4 text-right">Create a Part</a>
         </Link>
       </header>
-      <div className="grid grid-cols-3 gap-8">
+      <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
         {parts.map((projectPart, index) => (
-          <div key={projectPart._id} className="asset-card">
+          <div
+            key={projectPart._id}
+            className="asset-card bg-white shadow mb-2"
+          >
             <p>
               {index + 1}: {projectPart.name}
             </p>
             <Link href={`/projects/${projectId}/${projectPart._id}`}>
-              <a>Go to</a>
+              <a className="mb-2">Go to</a>
             </Link>
             <button
               className="block btn"
