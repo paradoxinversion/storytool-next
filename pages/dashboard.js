@@ -4,6 +4,7 @@ import Link from "next/link";
 import fetcher from "../utils/fetcher";
 import axios from "axios";
 import { deleteProject } from "../clientActions/project";
+import ProjectCard from "../componenents/assetCards/ProjectCard";
 
 export default function Dashboard() {
   const UserData = Auth.useContainer();
@@ -83,28 +84,11 @@ export default function Dashboard() {
           className="bg-gray-100 p-4 border rounded shadow-inner h-48 overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4"
         >
           {projects.map((project) => (
-            <div key={project._id} className="asset-card shadow bg-white mb-2">
-              <Link href={`/projects/${project._id}`}>
-                <a className="underline mb-2">{project.name} </a>
-              </Link>
-              <button
-                className="block btn"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  if (
-                    window.confirm(
-                      `You are about to delete ${project.name}. Are you sure you'd like to do that?`
-                    )
-                  ) {
-                    await deleteProject(project._id);
-                    await mutateProjects();
-                    await mutateScenes();
-                  }
-                }}
-              >
-                Delete Project
-              </button>
-            </div>
+            <ProjectCard
+              project={project}
+              mutateProjects={mutateProjects}
+              mutateScenes={mutateScenes}
+            />
           ))}
         </div>
       </section>
