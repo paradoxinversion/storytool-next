@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Head from "next/head";
 import * as yup from "yup";
+import { loginUser, registerUser } from "../clientActions/authentication";
 
 const LoginSchema = yup.object().shape({
   username: yup
@@ -22,47 +22,16 @@ function Login() {
   const [isRegister, setIsRegister] = useState(false);
 
   const onSubmit = async (values) => {
-    let result;
-    if (isRegister) {
-      result = await axios.post("/api/graphql", {
-        query: `
-        mutation($username: String!, $password: String!){
-          register(username:$username, password:$password){
-            user{
-              _id
-              username
-            }
-            error
-          }
-        }
-        
-        `,
-        variables: {
-          ...values,
-        },
-      });
-      router.push("/dashboard");
-    } else {
-      result = await axios.post("/api/graphql", {
-        query: `
-          mutation($username: String!, $password: String!){
-            login(username:$username, password:$password){
-              user{
-                _id
-                username
-              }
-              error
-            }
-          }
-          
-        
-        `,
-        variables: {
-          ...values,
-        },
-      });
-
-      router.push("/dashboard");
+    try {
+      if (isRegister) {
+        await registerUser(values);
+        router.push("/dashboard");
+      } else {
+        await loginUser(values);
+        router.push("/dashboard");
+      }
+    } catch (e) {
+      throw e;
     }
   };
 

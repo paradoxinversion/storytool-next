@@ -1,13 +1,12 @@
 import useSWR from "swr";
-import { useEffect, useState } from "react";
 import Auth from "../hooks/useAuthentication";
 import Link from "next/link";
 import fetcher from "../utils/fetcher";
-import { useRouter } from "next/router";
 import axios from "axios";
+import { deleteProject } from "../clientActions/project";
+
 export default function Dashboard() {
   const UserData = Auth.useContainer();
-  const router = useRouter();
 
   const { data: userProjects, mutate: mutateProjects } = useSWR(
     `
@@ -71,7 +70,7 @@ export default function Dashboard() {
       <header className="mb-4">
         <p className="text-2xl">Dashboard</p>
       </header>
-      <section id="projects" className="mb-4">
+      <section id="projects-container" className="mb-4">
         <header className="mb-2 flex justify-between">
           <span className="text-xl">Projects</span>
 
@@ -79,7 +78,10 @@ export default function Dashboard() {
             <a>Create Project</a>
           </Link>
         </header>
-        <div className="bg-gray-100 p-4 border rounded shadow-inner h-48 overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4">
+        <div
+          id="projects"
+          className="bg-gray-100 p-4 border rounded shadow-inner h-48 overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4"
+        >
           {projects.map((project) => (
             <div key={project._id} className="asset-card shadow bg-white mb-2">
               <Link href={`/projects/${project._id}`}>
@@ -94,24 +96,7 @@ export default function Dashboard() {
                       `You are about to delete ${project.name}. Are you sure you'd like to do that?`
                     )
                   ) {
-                    await axios.post("/api/graphql", {
-                      query: `
-                      mutation($projectId: String!){
-                        deleteProject(projectId:$projectId){
-                          project{
-                            _id
-                            name
-                          
-                          }
-                        }
-                      }
-                      
-                      `,
-                      variables: {
-                        projectId: project._id,
-                      },
-                    });
-
+                    await deleteProject(project._id);
                     await mutateProjects();
                     await mutateScenes();
                   }
@@ -123,11 +108,14 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
-      <section id="scenes" className="mb-4">
+      <section id="scenes-container" className="mb-4">
         <header className="mb-2">
           <p className="text-xl">Scenes</p>
         </header>
-        <div className="bg-gray-100 border rounded p-4 shadow-inner  h-48 overflow-y-scroll grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div
+          id="schenes"
+          className="bg-gray-100 border rounded p-4 shadow-inner  h-48 overflow-y-scroll grid grid-cols-2 gap-4 sm:grid-cols-3"
+        >
           {scenes.map((scene) => (
             <div key={scene._id} className="asset-card shadow bg-white">
               <Link
