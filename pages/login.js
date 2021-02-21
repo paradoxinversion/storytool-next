@@ -69,11 +69,18 @@ function Login() {
   return (
     <div
       id="authentication-page"
-      className="flex justify-center items-center w-full"
+      className="flex flex-col justify-center items-center w-full m-4"
     >
       <Head>
         <title>{isRegister ? "Register" : "Log In"}</title>
       </Head>
+      <header className="mb-4">
+        <p className="text-2xl">Log In</p>
+      </header>
+      <p className="mb-4">
+        Enter your username and password below to log in. If you don't have an
+        account yet, click the checkbox below.
+      </p>
       <Formik
         initialValues={{ username: "", password: "" }}
         validationSchema={LoginSchema}
@@ -81,29 +88,45 @@ function Login() {
           onSubmit(values);
         }}
       >
-        {({ values, errors }) => (
-          <Form className="grid grid-cols-1 auto-rows-min">
+        {({ values }) => (
+          <Form className="grid grid-cols-1 auto-rows-min border rounded p-6 w-3/4">
+            <label htmlFor="username">Username</label>
             <Field
-              className="input"
+              className="input mb-2"
               type="text"
               name="username"
               placeholder="Username"
               value={values.username}
             />
 
-            <ErrorMessage name="username" component="div" />
+            <ErrorMessage
+              name="username"
+              component="div"
+              className="text-red-600 text-xs"
+            />
+            <label htmlFor="password">Password</label>
 
             <Field
-              className="input"
+              className="input mb-2"
               type="text"
               name="password"
               placeholder="Password"
               value={values.password}
             />
-            <ErrorMessage name="password" component="div" />
-            <label htmlFor="register-check">
-              Registering?
+            <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-600 text-xs"
+            />
+            <div
+              className="flex justify-between mb-6"
+              id="registration-confirm"
+            >
+              <label className="" htmlFor="register-check">
+                Registering?
+              </label>
               <input
+                className=""
                 type="checkbox"
                 value={isRegister}
                 name="register-check"
@@ -112,9 +135,10 @@ function Login() {
                   setIsRegister(e.target.checked);
                 }}
               />
-            </label>
-
-            <button type="submit">Submit</button>
+            </div>
+            <button className="btn" type="submit">
+              {isRegister ? "Register" : "Login"}
+            </button>
           </Form>
         )}
       </Formik>

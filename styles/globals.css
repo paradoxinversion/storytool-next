@@ -10,7 +10,7 @@ a {
 }
 
 .input {
-  @apply h-8 border rounded;
+  @apply h-8 border rounded p-2;
 }
 
 .asset-card {
