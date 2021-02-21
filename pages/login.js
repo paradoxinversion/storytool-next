@@ -8,14 +8,14 @@ import { loginUser, registerUser } from "../clientActions/authentication";
 const LoginSchema = yup.object().shape({
   username: yup
     .string()
-    .min(1, "Name should be at least one character")
+    .min(1, "Name should be at least one character.")
     .max(60, "Name must be less than 60 characters.")
-    .required(),
+    .required("Username is required."),
   password: yup
     .string()
-    .min(4, "Password should be at least four characters")
+    .min(4, "Password should be at least four characters.")
     .max(60, "Password must be less than 60 chaarcters.")
-    .required(),
+    .required("Password is required."),
 });
 function Login() {
   const router = useRouter();

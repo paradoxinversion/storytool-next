@@ -5,6 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import SceneCard from "../../../componenents/assetCards/SceneCard";
+import { updatePartName } from "../../../clientActions/part";
 function PartOverview() {
   const router = useRouter();
   const { partId, projectId } = router.query;
@@ -69,20 +70,7 @@ function PartOverview() {
             <button
               className="btn mr-4"
               onClick={async () => {
-                await axios.post("/api/graphql", {
-                  query: `
-                  mutation($partId: String!, $partName: String!){
-                    updatePartName(partId:$partId, partName:$partName){
-                     name
-                    }
-                  }
-                  
-                  `,
-                  variables: {
-                    partId: part._id,
-                    partName: partNameUpdate,
-                  },
-                });
+                await updatePartName(part._id, partNameUpdate);
                 setPartNameUpdate("");
                 setEditPartName(false);
                 mutatePartData();

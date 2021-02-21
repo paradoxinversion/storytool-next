@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-
+import Link from "next/link";
 const NoSSREditor = dynamic(
   () => import("../../../../componenents/SceneEditor"),
   {
@@ -40,22 +40,33 @@ function CreateScene() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full m-4">
+      <header className="mb-4">
+        <p className="text-2xl">Create a Scene</p>
+        <p>Scenes are the smallest units of your story. What happens?</p>
+        <Link
+          href={`/projects/${router.query.projectId}/${router.query.partId}`}
+        >
+          <a className="underline">Back to the Part</a>
+        </Link>
+      </header>
       <Formik
         initialValues={{ sceneName: "" }}
         onSubmit={(values) => {
           onSubmit(values);
         }}
       >
-        <Form>
+        <Form className="border rounded p-4">
+          <label htmlFor="sceneName">Scene Name</label>
           <Field
-            className="input"
+            className="input mb-4 w-full"
             type="text"
+            id="sceneName"
             name="sceneName"
             placeholder="Scene Name"
           />
           <NoSSREditor setText={setSceneText} />
-          <button className="btn" type="submit">
+          <button className="btn mt-4" type="submit">
             Create Scene
           </button>
         </Form>
