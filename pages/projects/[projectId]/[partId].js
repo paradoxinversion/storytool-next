@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
+import SceneCard from "../../../componenents/assetCards/SceneCard";
 function PartOverview() {
   const router = useRouter();
   const { partId, projectId } = router.query;
@@ -13,7 +14,7 @@ function PartOverview() {
 
   // partId will be undefined on the first render.
   // Pass in the value
-  const { data: partScenes, mutate } = useSWR(
+  const { data: partScenes, mutate: mutateSceneData } = useSWR(
     () =>
       partId
         ? `
@@ -108,51 +109,13 @@ function PartOverview() {
           </Link>
         </header>
         <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
-          {partScenes.partScenes.map((scene, index) => (
-            <div key={scene._id} className="asset-card bg-white shadow mb-2 ">
-              <Link href={`/projects/${projectId}/${partId}/${scene._id}`}>
-                <a className="mb-2">
-                  {" "}
-                  {`${scene.name.slice(0, 20)}${
-                    scene.name.length > 20 ? "..." : ""
-                  }`}
-                </a>
-              </Link>
-              <button
-                className="block btn"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  if (
-                    window.confirm(
-                      `You are about to delete ${scene.name}. Are you sure you'd like to do that?`
-                    )
-                  ) {
-                    const result = await axios.post("/api/graphql", {
-                      query: `
-                      mutation($sceneId: String!){
-                        deleteScene(sceneId:$sceneId){
-                          scene{
-                            _id
-                            name
-                          
-                          }
-                        }
-                      }
-                      
-                      `,
-                      variables: {
-                        sceneId: scene._id,
-                      },
-                    });
-
-                    const data = await mutate();
-                    console.log(data);
-                  }
-                }}
-              >
-                Delete Scene
-              </button>
-            </div>
+          {partScenes.partScenes.map((scene) => (
+            <SceneCard
+              scene={scene}
+              projectId={projectId}
+              partId={partId}
+              mutateSceneData={mutateSceneData}
+            />
           ))}
         </div>
       </section>

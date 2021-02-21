@@ -2,9 +2,8 @@ import useSWR from "swr";
 import Auth from "../hooks/useAuthentication";
 import Link from "next/link";
 import fetcher from "../utils/fetcher";
-import axios from "axios";
-import { deleteProject } from "../clientActions/project";
 import ProjectCard from "../componenents/assetCards/ProjectCard";
+import MiniSceneCard from "../componenents/assetCards/MiniSceneCard";
 
 export default function Dashboard() {
   const UserData = Auth.useContainer();
@@ -74,7 +73,6 @@ export default function Dashboard() {
       <section id="projects-container" className="mb-4">
         <header className="mb-2 flex justify-between">
           <span className="text-xl">Projects</span>
-
           <Link href={`/create-project`}>
             <a>Create Project</a>
           </Link>
@@ -101,23 +99,7 @@ export default function Dashboard() {
           className="bg-gray-100 border rounded p-4 shadow-inner  h-48 overflow-y-scroll grid grid-cols-2 gap-4 sm:grid-cols-3"
         >
           {scenes.map((scene) => (
-            <div key={scene._id} className="asset-card shadow bg-white">
-              <Link
-                href={`/projects/${scene.project._id}/${scene.part._id}/${scene._id}`}
-              >
-                <a className="underline">{`${scene.name.slice(0, 20)}...`} </a>
-              </Link>
-              <p className="text-sm text-left">
-                {`Project: ${scene.project.name.slice(0, 20)}${
-                  scene.project.name.length > 20 ? "..." : ""
-                }`}
-              </p>
-              <p className="text-sm text-left">
-                {`Part: ${scene.part.name.slice(0, 20)}${
-                  scene.part.name.length > 20 ? "..." : ""
-                }`}
-              </p>
-            </div>
+            <MiniSceneCard scene={scene} />
           ))}
         </div>
       </section>

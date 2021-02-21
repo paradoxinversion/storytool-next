@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
+import { updateProjectName } from "../../clientActions/project";
+import { deletePart } from "../../clientActions/part";
+import PartCard from "../../componenents/assetCards/PartCard";
 function ProjectOverview() {
   const router = useRouter();
   const { projectId } = router.query;
@@ -24,7 +27,7 @@ function ProjectOverview() {
     fetcher
   );
 
-  const { data: projectParts, mutate } = useSWR(
+  const { data: projectParts, mutate: mutateProjectParts } = useSWR(
     () =>
       `
     { 
@@ -64,20 +67,7 @@ function ProjectOverview() {
             <button
               className="btn mr-4"
               onClick={async () => {
-                await axios.post("/api/graphql", {
-                  query: `
-                  mutation($projectId: String!, $projectName: String!){
-                    updateProjectName(projectId:$projectId, projectName:$projectName){
-                     name
-                    }
-                  }
-                  
-                  `,
-                  variables: {
-                    projectId: project._id,
-                    projectName: projectNameUpdate,
-                  },
-                });
+                await updateProjectName(project._id, projectNameUpdate);
                 setProjectNameUpdate("");
                 setEditProjectName(false);
                 mutateProjectData();
@@ -105,47 +95,11 @@ function ProjectOverview() {
         </header>
         <div className="bg-gray-100 p-4 border rounded shadow-inner flex-grow overflow-y-scroll sm:grid sm:grid-cols-3 sm:gap-4 sm:auto-rows-min">
           {parts.map((projectPart, index) => (
-            <div
-              key={projectPart._id}
-              className="asset-card bg-white shadow mb-2"
-            >
-              <Link href={`/projects/${projectId}/${projectPart._id}`}>
-                <a className="mb-2">{projectPart.name}</a>
-              </Link>
-              <button
-                className="block btn"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  if (
-                    window.confirm(
-                      `You are about to delete ${projectPart.name}. Are you sure you'd like to do that?`
-                    )
-                  ) {
-                    const result = await axios.post("/api/graphql", {
-                      query: `
-                      mutation($partId: String!){
-                        deletePart(partId:$partId){
-                          part{
-                            _id
-                            name
-                          
-                          }
-                        }
-                      }
-                      
-                      `,
-                      variables: {
-                        partId: projectPart._id,
-                      },
-                    });
-
-                    await mutate();
-                  }
-                }}
-              >
-                Delete Part
-              </button>
-            </div>
+            <PartCard
+              projectPart={projectPart}
+              mutateProjectParts={mutateProjectParts}
+              projectId={projectId}
+            />
           ))}
         </div>
       </section>
