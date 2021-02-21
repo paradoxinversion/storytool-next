@@ -5,6 +5,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { debounce } from "lodash";
 const NoSSREditor = dynamic(
   () => import("../../../../componenents/SceneEditor"),
   {
@@ -49,6 +50,7 @@ function SceneOverview() {
       </div>
     );
   }
+
   const saveText = async () => {
     try {
       const result = await axios.post("/api/graphql", {

@@ -21,7 +21,7 @@ function SceneEditor({ setText, initialText }) {
       <Head>
         <meta charset="utf-8" />
       </Head>
-      <div className="border w-full h-96 overflow-y-scroll">
+      <div className="border w-full h-96 overflow-y-scroll pb-4">
         <Editor
           editorState={editorState}
           onChange={setEditorState}
