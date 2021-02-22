@@ -19,3 +19,24 @@ export async function deleteScene(sceneId) {
     },
   });
 }
+
+export async function updateSceneText(sceneId, text) {
+  await axios.post("/api/graphql", {
+    query: `
+      mutation($text: String!, $sceneId: String!){
+        updateSceneText(sceneId:$sceneId, text:$text){
+          scene{
+            _id
+            text
+          }
+          error
+        }
+      }
+
+      `,
+    variables: {
+      sceneId,
+      text,
+    },
+  });
+}

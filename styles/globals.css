@@ -16,5 +16,15 @@ a {
 .asset-card {
   @apply border rounded text-center p-4 h-32 flex flex-col justify-center;
 }
+.editor-style-button {
+  color: #999;
+  cursor: pointer;
+  margin-right: 16px;
+  padding: 2px 0;
+  display: inline-block;
+}
 
+.editor-style-button-active {
+  color: #5890ff;
+}
 @tailwind utilities;

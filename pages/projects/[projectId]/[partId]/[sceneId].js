@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
+import { updateSceneText } from "../../../../clientActions/scene";
 const NoSSREditor = dynamic(
   () => import("../../../../componenents/SceneEditor"),
   {
@@ -50,35 +51,6 @@ function SceneOverview() {
       </div>
     );
   }
-
-  const saveText = async () => {
-    try {
-      const result = await axios.post("/api/graphql", {
-        query: `
-          mutation($text: String!, $sceneId: String!){
-            updateSceneText(sceneId:$sceneId, text:$text){
-              scene{
-                _id
-                text
-              }
-              error
-            }
-          }
-  
-          `,
-        variables: {
-          sceneId: sceneId,
-          text: sceneText,
-        },
-      });
-
-      console.log(result);
-      const sceneUpdate = result.data.data.updateSceneText.scene;
-      setSceneText(sceneUpdate.text);
-    } catch (e) {
-      throw e;
-    }
-  };
 
   return (
     <div className="m-4 w-full">
@@ -130,11 +102,8 @@ function SceneOverview() {
         )}
       </header>
       <div className="mb-4">
-        <NoSSREditor initialText={sceneText} setText={setSceneText} />
+        <NoSSREditor initialText={sceneText} sceneId={sceneId} />
       </div>
-      <button className="btn" onClick={saveText}>
-        Save text
-      </button>
     </div>
   );
 }
