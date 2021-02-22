@@ -54,40 +54,42 @@ function PartOverview() {
   }
   const { part } = partData;
   return (
-    <div className="w-full m-4">
+    <div id="part-page" className=" m-4 grid">
       <header>
         <Link href={`/projects/${projectId}`}>
           <a>Back to Project</a>
         </Link>
-        {editPartName ? (
-          <div>
-            <input
-              className="text-2xl"
-              type="text"
-              placeholder={part.name}
-              onChange={(e) => setPartNameUpdate(e.target.value)}
-            />
-            <button
-              className="btn mr-4"
-              onClick={async () => {
-                await updatePartName(part._id, partNameUpdate);
-                setPartNameUpdate("");
-                setEditPartName(false);
-                mutatePartData();
-              }}
-              disabled={partNameUpdate.length === 0}
-            >
-              Save
-            </button>
-            <button className="btn" onClick={() => setEditPartName(false)}>
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <p className="text-2xl" onClick={() => setEditPartName(true)}>
-            {part.name}
-          </p>
-        )}
+        <div>
+          {editPartName ? (
+            <span>
+              <input
+                className="text-2xl"
+                type="text"
+                placeholder={part.name}
+                onChange={(e) => setPartNameUpdate(e.target.value)}
+              />
+              <button
+                className="btn mr-4"
+                onClick={async () => {
+                  await updatePartName(part._id, partNameUpdate);
+                  setPartNameUpdate("");
+                  setEditPartName(false);
+                  mutatePartData();
+                }}
+                disabled={partNameUpdate.length === 0}
+              >
+                Save
+              </button>
+              <button className="btn" onClick={() => setEditPartName(false)}>
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <span className="text-2xl" onClick={() => setEditPartName(true)}>
+              {part.name}
+            </span>
+          )}
+        </div>
       </header>
       <section>
         <header className="flex justify-between">

@@ -27,4 +27,15 @@ a {
 .editor-style-button-active {
   color: #5890ff;
 }
+
+.main-container {
+  height: calc(100vh - 44px);
+}
+.DraftEditor-root {
+  max-height: 100%;
+}
+
+#scene-editor {
+  height: 80vh;
+}
 @tailwind utilities;

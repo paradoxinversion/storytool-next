@@ -56,35 +56,37 @@ function ProjectOverview() {
         <Link href={`/dashboard`}>
           <a>Back to Dashboard</a>
         </Link>
-        {editProjectName ? (
-          <div>
-            <input
-              className="text-2xl w-40"
-              type="text"
-              placeholder={project.name}
-              onChange={(e) => setProjectNameUpdate(e.target.value)}
-            />
-            <button
-              className="btn mr-4"
-              onClick={async () => {
-                await updateProjectName(project._id, projectNameUpdate);
-                setProjectNameUpdate("");
-                setEditProjectName(false);
-                mutateProjectData();
-              }}
-              disabled={projectNameUpdate.length === 0}
-            >
-              Save
-            </button>
-            <button className="btn" onClick={() => setEditProjectName(false)}>
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <p className="text-2xl" onClick={() => setEditProjectName(true)}>
-            {project.name}
-          </p>
-        )}
+        <div>
+          {editProjectName ? (
+            <span>
+              <input
+                className="text-2xl w-40"
+                type="text"
+                placeholder={project.name}
+                onChange={(e) => setProjectNameUpdate(e.target.value)}
+              />
+              <button
+                className="btn mr-4"
+                onClick={async () => {
+                  await updateProjectName(project._id, projectNameUpdate);
+                  setProjectNameUpdate("");
+                  setEditProjectName(false);
+                  mutateProjectData();
+                }}
+                disabled={projectNameUpdate.length === 0}
+              >
+                Save
+              </button>
+              <button className="btn" onClick={() => setEditProjectName(false)}>
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <span className="text-2xl" onClick={() => setEditProjectName(true)}>
+              {project.name}
+            </span>
+          )}
+        </div>
       </header>
       <section>
         <header className="flex justify-between">

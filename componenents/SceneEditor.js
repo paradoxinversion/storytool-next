@@ -76,7 +76,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
     );
   }, [initialText]);
   return (
-    <div className="h-full">
+    <div id="scene-editor" className="flex flex-col flex-grow">
       <Head>
         <meta charset="utf-8" />
       </Head>
@@ -97,7 +97,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
         ctrl+key instead.
       </p>
       <div
-        className="border w-full h-full overflow-y-scroll p-2 rounded"
+        className="border w-full overflow-y-scroll p-2 rounded"
         // onClick={focusEditor}
       >
         <Editor
