@@ -25,8 +25,9 @@ export async function registerUser(formValues) {
 }
 
 export async function loginUser(formValues) {
-  result = await axios.post("/api/graphql", {
-    query: `
+  try {
+    await axios.post("/api/graphql", {
+      query: `
       mutation($username: String!, $password: String!){
         login(username:$username, password:$password){
           user{
@@ -39,8 +40,11 @@ export async function loginUser(formValues) {
       
     
     `,
-    variables: {
-      ...formValues,
-    },
-  });
+      variables: {
+        ...formValues,
+      },
+    });
+  } catch (e) {
+    throw e;
+  }
 }

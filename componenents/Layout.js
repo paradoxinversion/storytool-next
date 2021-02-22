@@ -30,9 +30,6 @@ function Layout({ children }) {
         </p>
       </header>
       <main className="flex h-full flex-grow">{children}</main>
-      <footer className="bg-red-500 text-xs text-center">
-        <p className="m-2">(C)2019 Paradox Inversion Press</p>
-      </footer>
     </div>
   );
 }

@@ -4,7 +4,7 @@ function StyleButton({ active, style, label, onToggle }) {
   return (
     <span
       onClick={() => onToggle(style)}
-      className={`editor-style-button${
+      className={`border rounded px-2 text-sm editor-style-button${
         active ? " editor-style-button-active" : ""
       }`}
     >

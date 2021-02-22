@@ -77,7 +77,7 @@ function Login() {
 
             <Field
               className="input mb-2"
-              type="text"
+              type="password"
               name="password"
               placeholder="Password"
               value={values.password}

@@ -101,7 +101,7 @@ function SceneOverview() {
           </p>
         )}
       </header>
-      <div className="mb-4">
+      <div className="mb-4 h-full">
         <NoSSREditor initialText={sceneText} sceneId={sceneId} />
       </div>
     </div>

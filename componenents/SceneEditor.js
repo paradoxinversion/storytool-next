@@ -24,6 +24,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
       ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialText)))
       : EditorState.createEmpty()
   );
+  const [sceneSaved, setSceneSaved] = useState(true);
   const editor = React.useRef(null);
 
   const handleKeyCommand = (command, editorState) => {
@@ -37,18 +38,21 @@ function SceneEditor({ setText, initialText, sceneId }) {
     return "not-handled";
   };
 
-  const getText = () => {
-    console.log(editorState.getCurrentContent().getPlainText());
+  const getWordCount = (editorState) => {
+    return editorState
+      .getCurrentContent()
+      .getPlainText(" ")
+      .split(" ")
+      .filter((word) => word.length > 0).length;
   };
 
-  const saveSceneText = (editorState) => {
-    console.log(editorState.getCurrentContent().getPlainText());
-    updateSceneText(
+  const saveSceneText = async (editorState) => {
+    await updateSceneText(
       sceneId,
       JSON.stringify(convertToRaw(editorState.getCurrentContent()))
     );
+    setSceneSaved(true);
   };
-  const throttledGetText = useRef(throttle((test) => console.log(test), 3000));
   const throttledSave = useRef(
     throttle((editorState) => saveSceneText(editorState), 3000)
   );
@@ -56,14 +60,14 @@ function SceneEditor({ setText, initialText, sceneId }) {
     setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
+  // This fires even on click and blur
   const onChange = (editorState) => {
     // If there's a sceneId passed in, we're editing scene and should autosave
+    setSceneSaved(false);
     if (sceneId) {
       throttledSave.current(editorState);
     }
-    // throttledGetText.current(editorState.getCurrentContent().getPlainText());
     setEditorState(editorState);
-    // setText(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
   };
   useEffect(() => {
     if (!initialText) return;
@@ -72,7 +76,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
     );
   }, [initialText]);
   return (
-    <div>
+    <div className="h-full">
       <Head>
         <meta charset="utf-8" />
       </Head>
@@ -93,7 +97,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
         ctrl+key instead.
       </p>
       <div
-        className="border w-full h-96 overflow-y-scroll p-2 rounded"
+        className="border w-full h-full overflow-y-scroll p-2 rounded"
         // onClick={focusEditor}
       >
         <Editor
@@ -103,9 +107,14 @@ function SceneEditor({ setText, initialText, sceneId }) {
           handleKeyCommand={handleKeyCommand}
           placeholder="What happens?"
           spellCheck
-          onBlur={() => {}}
         />
       </div>
+      <p
+        className={`text-sm ${sceneSaved ? "text-green-400" : "text-red-200"}`}
+      >
+        {sceneSaved ? "Saved" : "You have unsaved work"}
+      </p>
+      <p>Word Count: {getWordCount(editorState)}</p>
     </div>
   );
 }
