@@ -51,7 +51,7 @@ function SceneOverview() {
   }
 
   return (
-    <div id="scene-page" className="m-4 w-fulls grid">
+    <div id="scene-page" className="m-4 grid">
       <header className="mb-4">
         <Link href={`/projects/${projectId}/${partId}`}>
           <a>Back</a>

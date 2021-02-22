@@ -66,7 +66,7 @@ export default function Dashboard() {
   const { projects } = userProjects;
   const { userScenes: scenes } = userScenes;
   return (
-    <div id="dashboard" className="m-4 w-full">
+    <div id="dashboard" className="m-4">
       <header className="mb-4">
         <p className="text-2xl">Dashboard</p>
       </header>

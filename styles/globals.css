@@ -35,7 +35,7 @@ a {
   max-height: 100%;
 }
 
-#scene-editor {
+/* #scene-editor {
   height: 80vh;
-}
+} */
 @tailwind utilities;

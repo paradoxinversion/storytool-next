@@ -40,7 +40,7 @@ function CreateScene() {
   };
 
   return (
-    <div className="w-full m-4">
+    <div className="m-4 grid">
       <header className="mb-4">
         <p className="text-2xl">Create a Scene</p>
         <p>Scenes are the smallest units of your story. What happens?</p>

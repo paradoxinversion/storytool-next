@@ -51,7 +51,7 @@ function ProjectOverview() {
   const { project } = projectData;
   const { projectParts: parts } = projectParts;
   return (
-    <div className="m-4 w-full flex flex-col">
+    <div className="m-4 grid">
       <header>
         <Link href={`/dashboard`}>
           <a>Back to Dashboard</a>

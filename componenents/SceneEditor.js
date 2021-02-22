@@ -76,7 +76,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
     );
   }, [initialText]);
   return (
-    <div id="scene-editor" className="flex flex-col flex-grow">
+    <div id="scene-overview" className="grid h-auto">
       <Head>
         <meta charset="utf-8" />
       </Head>
@@ -109,11 +109,15 @@ function SceneEditor({ setText, initialText, sceneId }) {
           spellCheck
         />
       </div>
-      <p
-        className={`text-sm ${sceneSaved ? "text-green-400" : "text-red-200"}`}
-      >
-        {sceneSaved ? "Saved" : "You have unsaved work"}
-      </p>
+      {sceneId && (
+        <p
+          className={`text-sm ${
+            sceneSaved ? "text-green-400" : "text-red-200"
+          }`}
+        >
+          {sceneSaved ? "Saved" : "You have unsaved work"}
+        </p>
+      )}
       <p>Word Count: {getWordCount(editorState)}</p>
     </div>
   );
