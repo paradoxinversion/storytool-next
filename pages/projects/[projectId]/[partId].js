@@ -3,14 +3,18 @@ import fetcher from "../../../utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SceneCard from "../../../componenents/assetCards/SceneCard";
 import { updatePartName } from "../../../clientActions/part";
+import UserProjects from "../../../hooks/useProjects";
+import { getProject } from "../../../clientActions/project";
 function PartOverview() {
   const router = useRouter();
   const { partId, projectId } = router.query;
   const [editPartName, setEditPartName] = useState(false);
   const [partNameUpdate, setPartNameUpdate] = useState("");
+  const UserProjectData = UserProjects.useContainer();
+
   // if (!partId) return null;
 
   // partId will be undefined on the first render.
@@ -44,7 +48,26 @@ function PartOverview() {
         : null,
     fetcher
   );
+  useEffect(() => {
+    // if we don't have project data, we need to fetch it
+    // we don't normally fetch it on this page otherwise
+    // users may have navigated here with that data already in state
+    if (UserProjectData.projects.length === 0) {
+      if (projectId) {
+        getProject(projectId).then(({ data }) => {
+          console.log(data.data);
+          UserProjectData.setCurrentProject(data.data.project);
+        });
+      }
+    }
+  }, [projectId]);
 
+  useEffect(() => {
+    // Set our part data
+    if (partData) {
+      UserProjectData.setCurrentPart(partData.part);
+    }
+  }, [partData]);
   if (!partData || !partScenes) {
     return (
       <div>

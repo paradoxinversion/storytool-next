@@ -4,10 +4,12 @@ import Link from "next/link";
 import fetcher from "../utils/fetcher";
 import ProjectCard from "../componenents/assetCards/ProjectCard";
 import MiniSceneCard from "../componenents/assetCards/MiniSceneCard";
+import { useEffect } from "react";
+import UserProjects from "../hooks/useProjects";
 
 export default function Dashboard() {
   const UserData = Auth.useContainer();
-
+  const UserProjectData = UserProjects.useContainer();
   const { data: userProjects, mutate: mutateProjects } = useSWR(
     `
     {
@@ -42,6 +44,12 @@ export default function Dashboard() {
         : null,
     fetcher
   );
+
+  useEffect(() => {
+    UserProjectData.setCurrentProject(null);
+    userProjects && UserProjectData.setProjects(userProjects.projects);
+  }, [userProjects]);
+
   if (!UserData.user)
     return (
       <Link href="/login">

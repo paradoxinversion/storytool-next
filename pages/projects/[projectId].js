@@ -2,16 +2,16 @@ import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateProjectName } from "../../clientActions/project";
-import { deletePart } from "../../clientActions/part";
 import PartCard from "../../componenents/assetCards/PartCard";
+import UserProjects from "../../hooks/useProjects";
 function ProjectOverview() {
   const router = useRouter();
   const { projectId } = router.query;
   const [editProjectName, setEditProjectName] = useState(false);
   const [projectNameUpdate, setProjectNameUpdate] = useState("");
+  const UserProjectData = UserProjects.useContainer();
   const { data: projectData, mutate: mutateProjectData } = useSWR(
     () =>
       projectId
@@ -40,6 +40,16 @@ function ProjectOverview() {
     fetcher
   );
 
+  useEffect(() => {
+    if (projectData) {
+      UserProjectData.setCurrentProject(projectData.project);
+    }
+  }, [projectData]);
+  useEffect(() => {
+    if (projectParts) {
+      UserProjectData.setProjectParts(projectParts.projectParts);
+    }
+  }, [projectParts]);
   if (!projectData || !projectParts) {
     return (
       <div>

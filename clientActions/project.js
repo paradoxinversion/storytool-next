@@ -1,5 +1,22 @@
 import axios from "axios";
 
+export async function getProject(projectId) {
+  return await axios.post("/api/graphql", {
+    query: `
+    query($projectId: String!){
+      project(projectId:$projectId){
+        _id
+        name
+      }
+    }
+    
+    `,
+    variables: {
+      projectId,
+    },
+  });
+}
+
 export async function deleteProject(projectId) {
   await axios.post("/api/graphql", {
     query: `
