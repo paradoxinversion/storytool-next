@@ -21,7 +21,7 @@ function CreatePart() {
   };
 
   return (
-    <div className="m-4">
+    <div className="m-4 md:max-w-md md:m-auto">
       <header className="mb-4">
         <p className="text-2xl">Create a Part</p>
         <p>

@@ -2,6 +2,7 @@ import { connectToDatabase } from "../utils/mongodb";
 import Project from "../db/models/Project";
 import Scene from "../db/models/Scene";
 import Part from "../db/models/Part";
+import { decrypt, encrypt } from "../utils/crypto";
 
 export const getProject = async (projectId) => {
   try {

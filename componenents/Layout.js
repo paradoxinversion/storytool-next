@@ -29,8 +29,7 @@ function Layout({ children }) {
           Story Tool <em>Next</em>
         </p>
       </header>
-      {/* <main className="flex h-full flex-grow">{children}</main> */}
-      <main className="main-container">{children}</main>
+      <main className="main-container max-h-full h-full">{children}</main>
     </div>
   );
 }

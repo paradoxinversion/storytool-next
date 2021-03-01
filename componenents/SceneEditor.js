@@ -76,11 +76,10 @@ function SceneEditor({ setText, initialText, sceneId }) {
     );
   }, [initialText]);
   return (
-    <div id="scene-overview" className="grid h-auto">
+    <div id="scene-editor" className="flex flex-col h-full max-h-full">
       <Head>
         <meta charset="utf-8" />
       </Head>
-      <header></header>
       <div id="editor-controls">
         {INLINE_STYLES.map((type) => (
           <StyleButton
@@ -97,7 +96,7 @@ function SceneEditor({ setText, initialText, sceneId }) {
         ctrl+key instead.
       </p>
       <div
-        className="border w-full overflow-y-scroll p-2 rounded"
+        className="border flex-grow p-2 rounded overflow-y-scroll"
         // onClick={focusEditor}
       >
         <Editor

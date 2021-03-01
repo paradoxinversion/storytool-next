@@ -17,6 +17,7 @@ const LoginSchema = yup.object().shape({
     .max(60, "Password must be less than 60 chaarcters.")
     .required("Password is required."),
 });
+
 function Login() {
   const router = useRouter();
   const [isRegister, setIsRegister] = useState(false);
@@ -38,7 +39,7 @@ function Login() {
   return (
     <div
       id="authentication-page"
-      className="flex flex-col justify-center items-center w-full m-4"
+      className="flex flex-col items-center w-full m-4 md:max-w-md md:m-auto"
     >
       <Head>
         <title>{isRegister ? "Register" : "Log In"}</title>

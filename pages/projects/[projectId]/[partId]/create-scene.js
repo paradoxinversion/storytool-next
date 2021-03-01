@@ -40,7 +40,7 @@ function CreateScene() {
   };
 
   return (
-    <div className="m-4 grid">
+    <div id="create-scene" className="p-4 h-full max-h-full flex flex-col">
       <header className="mb-4">
         <p className="text-2xl">Create a Scene</p>
         <p>Scenes are the smallest units of your story. What happens?</p>
@@ -56,7 +56,7 @@ function CreateScene() {
           onSubmit(values);
         }}
       >
-        <Form className="border rounded p-4">
+        <Form className="border rounded p-4 flex-grow flex flex-col">
           <label htmlFor="sceneName">Scene Name</label>
           <Field
             className="input mb-4 w-full"
@@ -65,7 +65,9 @@ function CreateScene() {
             name="sceneName"
             placeholder="Scene Name"
           />
+
           <NoSSREditor setText={setSceneText} />
+
           <button className="btn mt-4" type="submit">
             Create Scene
           </button>

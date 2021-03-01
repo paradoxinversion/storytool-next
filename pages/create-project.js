@@ -19,7 +19,7 @@ function CreateProject() {
   };
 
   return (
-    <div className="m-4">
+    <div className="m-4 grid md:max-w-md md:m-auto">
       <header className="mb-4">
         <p className="text-2xl">Create a Project</p>
         <p>

@@ -13,7 +13,7 @@ export default function HomePage() {
       <section id="greetings" className="text-center">
         <p className="text-xl mb-4">Welcome to Storytool, please log in.</p>
         <Link href="/login">
-          <a className="btn">Login or Register</a>
+          <a className="btn btn-primary">Login or Register</a>
         </Link>
       </section>
     </div>
